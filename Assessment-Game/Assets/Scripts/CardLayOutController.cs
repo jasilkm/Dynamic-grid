@@ -8,7 +8,6 @@ public class CardLayOutController : MonoBehaviour
 {
 
     #region public properties
-    public GameObject cellPrefab;
     public float spacing = 40f;
     public Transform GridTransform;
     public RectTransform containerRect;
@@ -61,7 +60,6 @@ public class CardLayOutController : MonoBehaviour
                 }
             }
 
-            Instantiate(cellPrefab, containerRect);
         }
 
         // Calculating total spaces 
@@ -79,7 +77,17 @@ public class CardLayOutController : MonoBehaviour
         gridLayout.spacing = new Vector2(spacing, spacing);
 
     }
+
+    public Transform GetGridTransform() => GridTransform;
+
     #endregion
+
+
+
+
+
+
+
 
     #region Editor Methods
 
@@ -100,6 +108,8 @@ public class CardLayOutController : MonoBehaviour
         }
     }
     #endregion
+
+
 
 
 }
