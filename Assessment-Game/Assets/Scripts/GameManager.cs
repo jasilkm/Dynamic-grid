@@ -6,12 +6,40 @@ public class GameManager : MonoBehaviour
 {
 
     private CardSpwanController _spwanController;
-    private List<CardView> currentSelections = new List<CardView>();
+    private HudController _scoreController;
 
-    // Start is called before the first frame update
+    private List<CardView> _currentSelections = new List<CardView>();
+    private int _completedPair = 0;
+    private int _totalCards = 10;
+    private float lastMatchTime = -10f;
+    private const int BonusTime = 1;
+    private const int _score = 10;
+    private const int _bonus = 10;
+    public static GameManager Instance { get; private set; }
+
+
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        _spwanController = FindAnyObjectByType<CardSpwanController>();
+        _scoreController = FindAnyObjectByType<HudController>();
+
+    }
+
+
+
     void Start()
     {
-        _spwanController = FindAnyObjectByType<CardSpwanController>();
+      
         StartGame();
     }
 
@@ -24,7 +52,7 @@ public class GameManager : MonoBehaviour
     IEnumerator _StartGame()
     {
         yield return new WaitForSeconds(0.1f);
-        _spwanController.SpwanCards(10, (cardData) =>
+        _spwanController.SpwanCards(_totalCards, (cardData) =>
         {
             MatchSelectedCards(cardData);
         });
@@ -40,16 +68,14 @@ public class GameManager : MonoBehaviour
 
     private void MatchSelectedCards(CardView card)
     {
-        currentSelections.Add(card);
+        _currentSelections.Add(card);
 
-        if (currentSelections.Count == 2)
+        if (_currentSelections.Count == 2)
         {
-            CardView first = currentSelections[0];
-            CardView second = currentSelections[1];
-
+            CardView first = _currentSelections[0];
+            CardView second = _currentSelections[1];
             StartCoroutine(CheckMatchAsync(first, second));
-
-            currentSelections.Clear(); 
+            _currentSelections.Clear(); 
         }
 
     }
@@ -61,7 +87,23 @@ public class GameManager : MonoBehaviour
 
         if (card1.cardData.cardID == card2.cardData.cardID)
         {
+            float currentTime = Time.time;
 
+            _scoreController.UpdateScrore(_score);
+            if (currentTime - lastMatchTime <= BonusTime)
+            {
+
+                _scoreController.UpdateScrore(_bonus);
+            }
+
+            lastMatchTime = currentTime;
+
+            _completedPair++;
+
+            if (_completedPair == _totalCards / 2)
+            {
+                Debug.Log("Game Over");
+            }
         }
         else
         {

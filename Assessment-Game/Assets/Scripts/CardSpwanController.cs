@@ -43,8 +43,6 @@ public class CardSpwanController : MonoBehaviour
 
             cardView.SetCardData(shuffledCards[i],(card)=>
             {
-
-               // Debug.Log(card.cardData.cardID);
                 getCardHandler(card);
             });
         }
@@ -62,8 +60,8 @@ public class CardSpwanController : MonoBehaviour
         // duplicating same data to spawn
         List<CardData> duplicated = tempCards.Concat(tempCards).ToList();
         //Making Random order 
-        List<CardData> shuffledCards = duplicated.OrderBy(x => UnityEngine.Random.value).ToList();
-        return shuffledCards;
+      //  List<CardData> shuffledCards = duplicated.OrderBy(x => UnityEngine.Random.value).ToList();
+        return duplicated;
     }
 
     #endregion

@@ -53,7 +53,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2759860765278632720}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -185,6 +185,8 @@ MonoBehaviour:
   _frontImage: {fileID: 2598349832918227387}
   _selectBtn: {fileID: 4201687352740147023}
   _backImage: {fileID: 1369052142944296860}
+  cardData: {fileID: 0}
+  isFlipped: 0
 --- !u!114 &4462680437480067722
 MonoBehaviour:
   m_ObjectHideFlags: 0
