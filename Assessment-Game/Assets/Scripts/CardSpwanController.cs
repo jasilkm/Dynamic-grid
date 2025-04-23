@@ -7,13 +7,17 @@ public class CardSpwanController : MonoBehaviour
 {
 
     #region public properties
+    [HideInInspector]
+    public List<CardView> gameCards = new List<CardView>();
+
+    public List<CardData> cardDatas = new List<CardData>();
 
     #endregion
 
     #region private properties
 
 
-    [SerializeField] private List<CardData> _cardDatas = new List<CardData>();
+
     [SerializeField] private CardView _cardView;
     private CardLayOutController _cardLayOutController;
     private Transform _gridTransform;
@@ -41,12 +45,49 @@ public class CardSpwanController : MonoBehaviour
 
             CardView cardView = obj.GetComponent<CardView>();
 
+            gameCards.Add(cardView);
+
             cardView.SetCardData(shuffledCards[i],(card)=>
             {
                 getCardHandler(card);
             });
         }
     }
+
+
+    public void SpwanCards(List<int> cards,LevelData levelData,  Action<CardView> getCardHandler)
+    {
+        _totalCards = cards.Count;
+
+        _cardLayOutController.CreateLayout(_totalCards);
+
+
+        for (int i = 0; i < _totalCards; i++)
+        {
+            GameObject obj = Instantiate(_cardView.gameObject, _gridTransform);
+
+            CardView cardView = obj.GetComponent<CardView>();
+
+            //getting matching Card data 
+            var cardData = cardDatas
+                .FirstOrDefault(card => card.cardID == cards[i]);
+
+
+            if (levelData.levelDataInfos[i].isFlipped)
+            {
+                cardView.FlipCards();
+
+            }
+
+            gameCards.Add(cardView);
+
+            cardView.SetCardData(cardData, (card) =>
+            {
+                getCardHandler(card);
+            });
+        }
+    }
+
 
 
     #endregion
@@ -56,7 +97,7 @@ public class CardSpwanController : MonoBehaviour
     private List<CardData> GetShuffledCards()
     {
         // Creating Uniq list for data  in each launch of the Game;
-        List<CardData> tempCards = _cardDatas.OrderBy(x => UnityEngine.Random.value).ToList().Take(_totalCards / 2).ToList();
+        List<CardData> tempCards = cardDatas.OrderBy(x => UnityEngine.Random.value).ToList().Take(_totalCards / 2).ToList();
         // duplicating same data to spawn
         List<CardData> duplicated = tempCards.Concat(tempCards).ToList();
         //Making Random order 
@@ -85,3 +126,5 @@ public class CardSpwanController : MonoBehaviour
         
     }
 }
+
+

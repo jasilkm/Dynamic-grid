@@ -1,13 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 public class GameManager : MonoBehaviour
 {
 
     private CardSpwanController _spwanController;
-    private HudController _hudController;
-    private GameOverController _gameOverController;
     private List<CardView> _currentSelections = new List<CardView>();
     private int _completedPair = 0;
     private int _totalCards = 10;
@@ -17,10 +15,12 @@ public class GameManager : MonoBehaviour
     private const int _bonus = 10;
     public static GameManager Instance { get; private set; }
 
-
+   
 
     private void Awake()
     {
+
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -28,11 +28,10 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-        //DontDestroyOnLoad(gameObject);
+        GameEvents.OnQuitPressed += SaveLevelDataToLocal;
 
         _spwanController = FindAnyObjectByType<CardSpwanController>();
-        _hudController = FindAnyObjectByType<HudController>();
-        _gameOverController = FindAnyObjectByType<GameOverController>();
+       
     }
 
 
@@ -40,7 +39,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
       
-        StartGame();
+       StartGame();
+      // LoadLevel();
     }
 
     void Update()
@@ -69,7 +69,6 @@ public class GameManager : MonoBehaviour
     private void MatchSelectedCards(CardView card)
     {
         _currentSelections.Add(card);
-
         if (_currentSelections.Count == 2)
         {
             CardView first = _currentSelections[0];
@@ -84,27 +83,29 @@ public class GameManager : MonoBehaviour
     IEnumerator CheckMatchAsync(CardView card1, CardView card2)
     {
         yield return new WaitForSeconds(1);
-
+       
         if (card1.cardData.cardID == card2.cardData.cardID)
         {
             float currentTime = Time.time;
 
-            _hudController.UpdateScrore(_score);
+            UIManager.Instance.SetScore(_score);
             if (currentTime - lastMatchTime <= BonusTime)
             {
-
-                _hudController.UpdateScrore(_bonus);
+                UIManager.Instance.SetBonusScore(_bonus);
             }
 
             lastMatchTime = currentTime;
 
             _completedPair++;
 
+           
+
             if (_completedPair == _totalCards / 2)
             {
-                GameoverInfo gameoverInfo = _hudController.GetGameoverInfo();
+                GameoverInfo gameoverInfo = UIManager.Instance.GetGameoverInfo();
 
-                _gameOverController.ShowGameover(gameoverInfo);
+                UIManager.Instance.ShowGameOverScreen(gameoverInfo);
+
 
             }
         }
@@ -115,6 +116,34 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+
+    private void SaveLevelDataToLocal()
+    {
+
+        Debug.Log("Game data saved");
+        GameoverInfo gameoverInfo = UIManager.Instance.GetGameoverInfo();
+        SaveAndLoadGame.SaveLevelData(_spwanController.gameCards, gameoverInfo);
+    }
+
+    public void LoadLevel()
+    {
+        LevelData levelData =  SaveAndLoadGame.LoadLevelData();
+        List<CardData> cardDatas = _spwanController.cardDatas;
+
+        //Getting card id from the data list so we can get relevent Cards
+        var ids  =  levelData.levelDataInfos.Select(x => x.cardId).ToList();
+        var flippedCards = levelData.levelDataInfos.Count(x => x.isFlipped);
+        UIManager.Instance.SetScore(levelData.score);
+        _completedPair = (int)Mathf.Floor(flippedCards)/2;
+
+        _spwanController.SpwanCards(ids, levelData,(cardData) =>
+        {
+            MatchSelectedCards(cardData);
+        });
+
+    }
+
 
 
 
