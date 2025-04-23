@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 public class CardSpwanController : MonoBehaviour
 {
-
 
     #region public properties
 
@@ -27,7 +27,7 @@ public class CardSpwanController : MonoBehaviour
 
     #region public Methods
 
-    public void SpwanCards(int totalCards)
+    public void SpwanCards(int totalCards, Action<CardView> getCardHandler)
     {
         _totalCards = totalCards;
         
@@ -41,7 +41,12 @@ public class CardSpwanController : MonoBehaviour
 
             CardView cardView = obj.GetComponent<CardView>();
 
-            cardView.SetCardData(shuffledCards[i]);
+            cardView.SetCardData(shuffledCards[i],(card)=>
+            {
+
+               // Debug.Log(card.cardData.cardID);
+                getCardHandler(card);
+            });
         }
     }
 
@@ -53,11 +58,11 @@ public class CardSpwanController : MonoBehaviour
     private List<CardData> GetShuffledCards()
     {
         // Creating Uniq list for data  in each launch of the Game;
-        List<CardData> tempCards = _cardDatas.OrderBy(x => Random.value).ToList().Take(_totalCards / 2).ToList();
+        List<CardData> tempCards = _cardDatas.OrderBy(x => UnityEngine.Random.value).ToList().Take(_totalCards / 2).ToList();
         // duplicating same data to spawn
         List<CardData> duplicated = tempCards.Concat(tempCards).ToList();
         //Making Random order 
-        List<CardData> shuffledCards = duplicated.OrderBy(x => Random.value).ToList();
+        List<CardData> shuffledCards = duplicated.OrderBy(x => UnityEngine.Random.value).ToList();
         return shuffledCards;
     }
 
@@ -73,8 +78,6 @@ public class CardSpwanController : MonoBehaviour
         {
             _gridTransform = _cardLayOutController.GetGridTransform();
         }
-
-        SpwanCards(8);
 
     }
 

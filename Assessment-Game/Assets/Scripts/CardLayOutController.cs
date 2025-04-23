@@ -28,7 +28,7 @@ public class CardLayOutController : MonoBehaviour
 
     private void Start()
     {
-        CreateLayout(10);
+        Debug.Log("CardLayOutController");
     }
 
     #endregion

@@ -2,29 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 public class CardView : MonoBehaviour
 {
 
     #region private properties
-    private CardData cardData;
     [SerializeField]private Image _frontImage;
     [SerializeField]private Button _selectBtn;
     [SerializeField]private Image _backImage;
-    private bool isFlipped = false;
+    private Action<CardView> _selectedCardHandler;
 
     #endregion
 
     #region public properties
+    [HideInInspector]public CardData cardData;
+    public bool isFlipped = false;
+
     #endregion
 
     #region Events properties
     #endregion
 
     #region Private properties
-    public void FlipImage()
+    public void OnCardSelected()
     {
-        StartCoroutine(FlipCard(false));
+
+        if (!isFlipped)
+        {
+            isFlipped = true;
+            _selectedCardHandler(this);
+            StartCoroutine(FlipCard(false));
+        }
+    }
+
+
+    public void BackFlipCard()
+    {
+        
         StartCoroutine(FlipCardToNormal(true));
+        
     }
 
 
@@ -46,7 +62,6 @@ public class CardView : MonoBehaviour
             }
             yield return null;
         }
-
         transform.localScale = end;
     }
 
@@ -54,8 +69,6 @@ public class CardView : MonoBehaviour
 
     IEnumerator FlipCardToNormal(bool showFront)
     {
-
-        yield return new WaitForSeconds(2);
         float duration = 0.2f;
         float time = 0f;
         Vector3 start = transform.localScale;
@@ -74,13 +87,8 @@ public class CardView : MonoBehaviour
         }
 
         transform.localScale = end;
-        isFlipped = showFront;
-
+        isFlipped = false;
     }
-
-
-
-
 
     #endregion
 
@@ -88,8 +96,10 @@ public class CardView : MonoBehaviour
 
     #region public Methods
 
-    public void SetCardData(CardData cardData )
+    public void SetCardData(CardData cardDataArg, Action<CardView> selectedCardHandler)
     {
+        this.cardData = cardDataArg;
+        _selectedCardHandler = selectedCardHandler;
         _frontImage.sprite = cardData.cardImage;
 
     }
@@ -100,7 +110,7 @@ public class CardView : MonoBehaviour
     #region Unity Methods
     private void Awake()
     {
-       _selectBtn.onClick.AddListener(FlipImage);
+       _selectBtn.onClick.AddListener(OnCardSelected);
     }
 
 
