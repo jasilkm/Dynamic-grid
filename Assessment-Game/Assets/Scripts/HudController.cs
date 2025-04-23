@@ -26,5 +26,15 @@ public class HudController : MonoBehaviour
     }
 
 
+    public GameoverInfo GetGameoverInfo()
+    {
+        GameoverInfo gameoverInfo = new GameoverInfo();
+        gameoverInfo.Score = _totalScore;
+        gameoverInfo.Bonus = _bonus;
+        gameoverInfo.Time = 0;
+        return gameoverInfo;
+    }
+
+
 
 }

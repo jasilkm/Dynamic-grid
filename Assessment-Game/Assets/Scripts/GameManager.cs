@@ -6,8 +6,8 @@ public class GameManager : MonoBehaviour
 {
 
     private CardSpwanController _spwanController;
-    private HudController _scoreController;
-
+    private HudController _hudController;
+    private GameOverController _gameOverController;
     private List<CardView> _currentSelections = new List<CardView>();
     private int _completedPair = 0;
     private int _totalCards = 10;
@@ -28,11 +28,11 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         _spwanController = FindAnyObjectByType<CardSpwanController>();
-        _scoreController = FindAnyObjectByType<HudController>();
-
+        _hudController = FindAnyObjectByType<HudController>();
+        _gameOverController = FindAnyObjectByType<GameOverController>();
     }
 
 
@@ -89,11 +89,11 @@ public class GameManager : MonoBehaviour
         {
             float currentTime = Time.time;
 
-            _scoreController.UpdateScrore(_score);
+            _hudController.UpdateScrore(_score);
             if (currentTime - lastMatchTime <= BonusTime)
             {
 
-                _scoreController.UpdateScrore(_bonus);
+                _hudController.UpdateScrore(_bonus);
             }
 
             lastMatchTime = currentTime;
@@ -102,7 +102,10 @@ public class GameManager : MonoBehaviour
 
             if (_completedPair == _totalCards / 2)
             {
-                Debug.Log("Game Over");
+                GameoverInfo gameoverInfo = _hudController.GetGameoverInfo();
+
+                _gameOverController.ShowGameover(gameoverInfo);
+
             }
         }
         else
