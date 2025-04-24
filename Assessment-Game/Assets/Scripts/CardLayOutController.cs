@@ -8,11 +8,13 @@ public class CardLayOutController : MonoBehaviour
 {
 
     #region public properties
-    public float spacing = 40f;
-    public Transform GridTransform;
-    public RectTransform containerRect;
-  
-    public RectOffset rectOffset;
+   [SerializeField] private float spacing = 40f;
+   [SerializeField] private Transform GridTransform;
+   [SerializeField] private RectTransform containerRect;
+   [SerializeField] private RectOffset rectOffset;
+   [SerializeField] private float xOffset;
+   [SerializeField] private float yOffset;
+
     #endregion
 
     #region Private properties
@@ -24,11 +26,12 @@ public class CardLayOutController : MonoBehaviour
     private void Awake()
     {
         gridLayout = GetComponent<GridLayoutGroup>();
+        containerRect.anchoredPosition = new Vector2(0, -150);
     }
 
     private void Start()
     {
-        Debug.Log("CardLayOutController");
+        
     }
 
     #endregion
@@ -41,8 +44,8 @@ public class CardLayOutController : MonoBehaviour
         int bestCols = 1;
         int bestRows = totalCells;
 
-        float containerWidth = containerRect.rect.width - (rectOffset.left+rectOffset.right);
-        float containerHeight = containerRect.rect.height - (rectOffset.top + rectOffset.bottom);
+        float containerWidth = containerRect.rect.width - (rectOffset.left+rectOffset.right+ xOffset);
+        float containerHeight = containerRect.rect.height - (rectOffset.top + rectOffset.bottom + yOffset);
 
         for (int i = 1; i <= totalCells; i++)
         {
@@ -77,6 +80,10 @@ public class CardLayOutController : MonoBehaviour
         gridLayout.spacing = new Vector2(spacing, spacing);
         gridLayout.padding = new RectOffset(rectOffset.left, rectOffset.right, rectOffset.top, rectOffset.bottom);
     }
+
+
+
+
 
     public Transform GetGridTransform() => GridTransform;
 

@@ -9,7 +9,6 @@ public class CardSpwanController : MonoBehaviour
     #region public properties
     [HideInInspector]
     public List<CardView> gameCards = new List<CardView>();
-
     public List<CardData> cardDatas = new List<CardData>();
 
     #endregion
