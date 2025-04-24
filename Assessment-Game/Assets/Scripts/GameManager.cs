@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     private CardSpwanController _spwanController;
     private List<CardView> _currentSelections = new List<CardView>();
     private int _completedPair = 0;
-    private int _totalCards = 10;
+    private int _totalCards = 16;
     private float lastMatchTime = -10f;
     private const int BonusTime = 1;
     private const int _score = 10;

@@ -8,7 +8,7 @@ public class CardLayOutController : MonoBehaviour
 {
 
     #region public properties
-   [SerializeField] private float spacing = 40f;
+   [SerializeField] private float spacing = 20f;
    [SerializeField] private Transform GridTransform;
    [SerializeField] private RectTransform containerRect;
    [SerializeField] private RectOffset rectOffset;
