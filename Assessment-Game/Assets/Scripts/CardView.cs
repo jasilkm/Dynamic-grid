@@ -147,18 +147,6 @@ public class CardView : MonoBehaviour
     }
 
 
-
-    void Start()
-    {
-     
-    }
-
-    void Update()
-    {
-
-    }
-
-
     #endregion
 
 

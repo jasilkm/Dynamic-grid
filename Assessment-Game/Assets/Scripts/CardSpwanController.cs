@@ -54,9 +54,7 @@ public class CardSpwanController : MonoBehaviour
 
         for (int i = 0; i < totalCards; i++)
         {
-           
             GameObject obj = Instantiate(_cardView.gameObject, _gridTransform);
-
             CardView cardView = obj.GetComponent<CardView>();
             cardView.gameObject.SetActive(false);
             gameCards.Add(cardView);
@@ -74,7 +72,8 @@ public class CardSpwanController : MonoBehaviour
             item.gameObject.SetActive(true);
         }
 
-
+        yield return new WaitForSeconds(1);
+        DisbaleGrid();
     }
 
 
@@ -120,8 +119,6 @@ public class CardSpwanController : MonoBehaviour
             Destroy(item.gameObject);
         }
         gameCards.Clear();
-
-        Debug.Log("gameCards :"+ gameCards.Count);
        
     }
     #endregion
@@ -153,6 +150,18 @@ public class CardSpwanController : MonoBehaviour
         }
 
     }
+
+    public void DisbaleGrid()
+    {
+        _cardLayOutController.gridLayout.enabled = false;
+    }
+
+
+    public void EnableGrid()
+    {
+        _cardLayOutController.gridLayout.enabled = true;
+    }
+
 
     // Update is called once per frame
     void Update()

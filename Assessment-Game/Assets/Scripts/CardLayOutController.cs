@@ -18,7 +18,7 @@ public class CardLayOutController : MonoBehaviour
     #endregion
 
     #region Private properties
-    private GridLayoutGroup gridLayout;
+    public GridLayoutGroup gridLayout;
     #endregion
 
 
@@ -64,7 +64,6 @@ public class CardLayOutController : MonoBehaviour
             }
 
         }
-
         // Calculating total spaces 
         float totalSpacingX = spacing * (bestCols - 1);
         float totalSpacingY = spacing * (bestRows - 1);

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
+using DG.Tweening;
 public class GameManager : MonoBehaviour
 {
 
@@ -43,9 +45,9 @@ public class GameManager : MonoBehaviour
     IEnumerator _StartGame()
     {
         yield return new WaitForSeconds(0.1f);
-        _spwanController.SpwanCards(_totalCards, (cardData) =>
+        _spwanController.SpwanCards(_totalCards, (cardView) =>
         {
-            MatchSelectedCards(cardData);
+            MatchSelectedCards(cardView);
         });
     }
 
@@ -77,30 +79,32 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
        
+
         if (card1.cardData.cardID == card2.cardData.cardID)
         {
+            
             float currentTime = Time.time;
+
             AudioManager.Instance.PlaySFX(AudioManager.Instance.cardMatchedSound);
+
+            PlayCardMoveAnimation(card1, card2);
+
             UIManager.Instance.SetScore(_score);
+
             if (currentTime - lastMatchTime <= BonusTime)
             {
                 UIManager.Instance.SetBonusScore(_bonus);
             }
-
+            
             lastMatchTime = currentTime;
 
             _completedPair++;
-
-           
 
             if (_completedPair == _totalCards / 2)
             {
                 AudioManager.Instance.PlaySFX(AudioManager.Instance.gameOverSound);
                 GameoverInfo gameoverInfo = UIManager.Instance.GetGameoverInfo();
-
                 UIManager.Instance.ShowGameOverScreen(gameoverInfo);
-
-
             }
         }
         else
@@ -115,8 +119,6 @@ public class GameManager : MonoBehaviour
 
     private void SaveLevelDataToLocal()
     {
-
-        Debug.Log("Game data saved");
         GameoverInfo gameoverInfo = UIManager.Instance.GetGameoverInfo();
         SaveAndLoadGame.SaveLevelData(_spwanController.gameCards, gameoverInfo);
     }
@@ -140,12 +142,27 @@ public class GameManager : MonoBehaviour
     }
 
 
+    private void PlayCardMoveAnimation(CardView card1, CardView card2)
+    {
+        card1.gameObject.transform.SetSiblingIndex(100);
+        card2.gameObject.transform.SetSiblingIndex(100);
+
+        Vector3 posA = card1.transform.position;
+        Vector3 posB = card2.transform.position;
+        Vector3 midPoint = (posA + posB) / 2;
+        card1.gameObject.transform.DOMove(midPoint, .4f).SetEase(Ease.Linear).OnComplete(() => card1.gameObject.transform.DOScale(new Vector3(.01f, .01f, .01f),.1f)); ;  
+        card2.gameObject.transform.DOMove(midPoint, .4f).SetEase(Ease.Linear).OnComplete(() => card2.gameObject.transform.DOScale(new Vector3(.01f, .01f, .01f), .1f)); 
+    }
+
+
     private void GameEvents_OnQuitPressed()
     {
         SaveLevelDataToLocal();
         _spwanController.ClearLevelAssets();
         UIManager.Instance.ShowLevelSelection();
         UIManager.Instance.SetScore(0);
+        _currentSelections.Clear();
+
     }
 
 }
