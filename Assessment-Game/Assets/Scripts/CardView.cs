@@ -26,6 +26,7 @@ public class CardView : MonoBehaviour
     #region Private properties
     public void OnCardSelected()
     {
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.cardSelectedSound);
 
         if (!isFlipped)
         {
@@ -133,6 +134,7 @@ public class CardView : MonoBehaviour
         this.cardData = cardDataArg;
         _selectedCardHandler = selectedCardHandler;
         _frontImage.sprite = cardData.cardImage;
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.cardGenerate);
 
     }
 

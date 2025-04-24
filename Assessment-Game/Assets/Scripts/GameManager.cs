@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
         if (card1.cardData.cardID == card2.cardData.cardID)
         {
             float currentTime = Time.time;
-
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.cardMatchedSound);
             UIManager.Instance.SetScore(_score);
             if (currentTime - lastMatchTime <= BonusTime)
             {
@@ -102,6 +102,7 @@ public class GameManager : MonoBehaviour
 
             if (_completedPair == _totalCards / 2)
             {
+                AudioManager.Instance.PlaySFX(AudioManager.Instance.gameOverSound);
                 GameoverInfo gameoverInfo = UIManager.Instance.GetGameoverInfo();
 
                 UIManager.Instance.ShowGameOverScreen(gameoverInfo);
@@ -111,6 +112,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.cardMisMatchedSound);
             card1.BackFlipCard();
             card2.BackFlipCard();
         }
