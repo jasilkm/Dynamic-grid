@@ -134,7 +134,6 @@ public class CardView : MonoBehaviour
         this.cardData = cardDataArg;
         _selectedCardHandler = selectedCardHandler;
         _frontImage.sprite = cardData.cardImage;
-        AudioManager.Instance.PlaySFX(AudioManager.Instance.cardGenerate);
 
     }
 

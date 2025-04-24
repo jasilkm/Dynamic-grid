@@ -19,11 +19,12 @@ public class CardSpwanController : MonoBehaviour
 
 
     [SerializeField] private CardView _cardView;
+  
     private CardLayOutController _cardLayOutController;
     private Transform _gridTransform;
     private CardData _cardData;
     private int _totalCards;
-
+    private Action<CardView> _getCardHandler;
     #endregion
 
     #region Events properties
@@ -31,27 +32,50 @@ public class CardSpwanController : MonoBehaviour
 
     #region public Methods
 
+
+
+
     public void SpwanCards(int totalCards, Action<CardView> getCardHandler)
     {
         _totalCards = totalCards;
         
         _cardLayOutController.CreateLayout(totalCards);
 
+        _getCardHandler = getCardHandler;
+
+        StartCoroutine(_genrateCards(totalCards)) ;
+    }
+
+
+    IEnumerator _genrateCards(int totalCards)
+    {
+       
+
         List<CardData> shuffledCards = GetShuffledCards();
 
         for (int i = 0; i < totalCards; i++)
         {
+           
             GameObject obj = Instantiate(_cardView.gameObject, _gridTransform);
 
             CardView cardView = obj.GetComponent<CardView>();
-
+            cardView.gameObject.SetActive(false);
             gameCards.Add(cardView);
 
-            cardView.SetCardData(shuffledCards[i],(card)=>
+            cardView.SetCardData(shuffledCards[i], (card) =>
             {
-                getCardHandler(card);
+                _getCardHandler(card);
             });
         }
+
+        foreach (var item in gameCards)
+        {
+            yield return new WaitForSeconds(0.03f);
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.cardGenerate);
+            item.gameObject.SetActive(true);
+        }
+
+
     }
 
 
@@ -67,6 +91,7 @@ public class CardSpwanController : MonoBehaviour
             GameObject obj = Instantiate(_cardView.gameObject, _gridTransform);
 
             CardView cardView = obj.GetComponent<CardView>();
+
 
             //getting matching Card data 
             var cardData = cardDatas

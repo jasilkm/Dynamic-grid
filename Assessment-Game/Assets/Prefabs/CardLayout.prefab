@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2546442465261208514}
   - component: {fileID: 2546442465261208515}
   - component: {fileID: 2546442465261208516}
+  - component: {fileID: 131969483}
   m_Layer: 5
   m_Name: CardLayout
   m_TagString: Untagged
@@ -92,14 +93,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
+    m_Left: 50
+    m_Right: 50
+    m_Top: 200
     m_Bottom: 0
-  m_ChildAlignment: 4
+  m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
+  m_CellSize: {x: 250, y: 250}
   m_Spacing: {x: 50, y: 50}
   m_Constraint: 1
   m_ConstraintCount: 5
@@ -115,12 +116,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f309230c96e42469e8da9b4435302a46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellPrefab: {fileID: 4462680437480067724, guid: 8ae01bbe521be4ca3823091a6d25a562, type: 3}
   spacing: 50
   GridTransform: {fileID: 2546442465261208575}
   containerRect: {fileID: 2546442465261208575}
-  paddingX: 200
-  paddingY: 200
+  rectOffset:
+    m_Left: 50
+    m_Right: 50
+    m_Top: 200
+    m_Bottom: 100
 --- !u!223 &2546442465261208516
 Canvas:
   m_ObjectHideFlags: 0
@@ -143,3 +146,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &131969483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2546442465261208574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295

@@ -11,8 +11,8 @@ public class CardLayOutController : MonoBehaviour
     public float spacing = 40f;
     public Transform GridTransform;
     public RectTransform containerRect;
-    public float paddingX = 120f;
-    public float paddingY = 120f;
+  
+    public RectOffset rectOffset;
     #endregion
 
     #region Private properties
@@ -41,8 +41,8 @@ public class CardLayOutController : MonoBehaviour
         int bestCols = 1;
         int bestRows = totalCells;
 
-        float containerWidth = containerRect.rect.width - paddingX;
-        float containerHeight = containerRect.rect.height - paddingY;
+        float containerWidth = containerRect.rect.width - (rectOffset.left+rectOffset.right);
+        float containerHeight = containerRect.rect.height - (rectOffset.top + rectOffset.bottom);
 
         for (int i = 1; i <= totalCells; i++)
         {
@@ -75,7 +75,7 @@ public class CardLayOutController : MonoBehaviour
         gridLayout.constraintCount = bestCols;
         gridLayout.cellSize = new Vector2(cardWidth, cardheight);
         gridLayout.spacing = new Vector2(spacing, spacing);
-
+        gridLayout.padding = new RectOffset(rectOffset.left, rectOffset.right, rectOffset.top, rectOffset.bottom);
     }
 
     public Transform GetGridTransform() => GridTransform;
