@@ -30,8 +30,6 @@ public static class SaveAndLoadGame
 
         string json = JsonConvert.SerializeObject(levelData,Formatting.Indented);
 
-        Debug.Log("SaveLevelData :" + json);
-
         File.WriteAllText(SavePath, json);
 
     }

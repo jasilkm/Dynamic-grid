@@ -15,11 +15,11 @@ public class GameManager : MonoBehaviour
     private const int _bonus = 10;
     public static GameManager Instance { get; private set; }
 
-   
+  
 
     private void Awake()
     {
-
+        GameEvents.OnLevelSelected += StartGame;
 
         if (Instance != null && Instance != this)
         {
@@ -28,26 +28,17 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-        GameEvents.OnQuitPressed += SaveLevelDataToLocal;
-
+        GameEvents.OnQuitPressed += GameEvents_OnQuitPressed;
         _spwanController = FindAnyObjectByType<CardSpwanController>();
        
     }
 
-
-
     void Start()
     {
       
-       StartGame();
+      // StartGame();
       // LoadLevel();
     }
-
-    void Update()
-    {
-        
-    }
-
 
     IEnumerator _StartGame()
     {
@@ -59,8 +50,10 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void StartGame()
+    public void StartGame(int totalCards)
     {
+        UIManager.Instance.HideLevelSelection();
+        _totalCards = totalCards;
         StartCoroutine(_StartGame());
     }
 
@@ -147,6 +140,12 @@ public class GameManager : MonoBehaviour
     }
 
 
-
+    private void GameEvents_OnQuitPressed()
+    {
+        SaveLevelDataToLocal();
+        _spwanController.ClearLevelAssets();
+        UIManager.Instance.ShowLevelSelection();
+        UIManager.Instance.SetScore(0);
+    }
 
 }

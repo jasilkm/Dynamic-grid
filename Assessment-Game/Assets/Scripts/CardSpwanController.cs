@@ -113,7 +113,17 @@ public class CardSpwanController : MonoBehaviour
     }
 
 
+    public void ClearLevelAssets()
+    {
+        foreach (var item in gameCards)
+        {
+            Destroy(item.gameObject);
+        }
+        gameCards.Clear();
 
+        Debug.Log("gameCards :"+ gameCards.Count);
+       
+    }
     #endregion
 
     #region private Methods

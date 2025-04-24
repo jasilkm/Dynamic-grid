@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private HudController hudController;
     [SerializeField] private GameOverController gameOverController;
     [SerializeField] private PauseController pauseController;
+    [SerializeField] private LevelSelectionController levelSelectionController;
 
 
 
@@ -17,6 +18,8 @@ public class UIManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        ShowLevelSelection();
     }
 
 
@@ -53,7 +56,15 @@ public class UIManager : MonoBehaviour
         hudController.UpdateBonus(bonus);
     }
 
+    public void HideLevelSelection()
+    {
+        levelSelectionController.Hide();
+    }
 
+    public void ShowLevelSelection()
+    {
+        levelSelectionController.Show();
+    }
 
 
 }
