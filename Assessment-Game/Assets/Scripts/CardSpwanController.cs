@@ -129,16 +129,20 @@ public class CardSpwanController : MonoBehaviour
 
         for (int i = 0; i < _totalCards; i++)
         {
-            yield return new WaitForSeconds(0.03f);
             AudioManager.Instance.PlaySFX(AudioManager.Instance.cardGenerate);
             gameCards[i].gameObject.SetActive(true);
             if (levelData.levelDataInfos[i].isFlipped)
             {
                 gameCards[i].SetScale();
             }
-          
+
+            gameCards[i].FlipCards();
+
+
         }
 
+        yield return new WaitForSeconds(3f);
+        gameCards.ForEach(x => x.BackFlipCard());
         yield return new WaitForSeconds(1);
         DisbaleGrid();
 
