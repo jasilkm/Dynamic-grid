@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
     {
         UIManager.Instance.HideLevelSelection();
         _totalCards = totalCards;
+        _completedPair = 0;
         StartCoroutine(_StartGame());
     }
 
@@ -159,9 +160,10 @@ public class GameManager : MonoBehaviour
     private void GameEvents_OnQuitPressed()
     {
         SaveLevelDataToLocal();
+        UIManager.Instance.SetScore(0);
         _spwanController.ClearLevelAssets();
         UIManager.Instance.ShowLevelSelection();
-        UIManager.Instance.SetScore(0);
+      
         _currentSelections.Clear();
 
     }

@@ -22,14 +22,17 @@ public class HudController : MonoBehaviour
 
     public void UpdateScrore(int score)
     {
-        _totalScore += score;
+        if (score == 0) _totalScore = 0;
+
+         _totalScore += score;
         _scoreText.text = $"Score: {_totalScore}";
     }
 
 
     public void UpdateBonus(int bonus)
     {
-        _totalScore += bonus;
+        if (bonus == 0) _totalScore = 0; _bonus = 0;
+         _totalScore += bonus;
         _bonus += bonus;
         _scoreText.text = $"Score: {_totalScore}";
     }
