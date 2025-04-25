@@ -34,8 +34,6 @@ public class CardLayOutController : MonoBehaviour
 
     #region Public Methods
     
-
-
     public void CreateLayout(int totalCells)
     {
         if (totalCells <= 0) {
@@ -51,11 +49,12 @@ public class CardLayOutController : MonoBehaviour
         float containerWidth = containerRect.rect.width - (rectOffset.left + rectOffset.right + xOffset);
         float containerHeight = containerRect.rect.height - (rectOffset.top + rectOffset.bottom + yOffset);
 
-
+        //using as starting value ] 
         float bestFitSize = float.MaxValue;
-
+        
         for (int i = 1; i <= totalCells; i++)
         {
+            // getting divisor  so we can confirm that there wont be any empty sell
             if (totalCells % i == 0)
             {
                 int cols = i;
@@ -85,11 +84,11 @@ public class CardLayOutController : MonoBehaviour
             }
         }
 
-        // Calculating total spacing
+        // Calculating total spacing  using for all cards
         float totalSpacingX = spacing * (bestCols - 1);
         float totalSpacingY = spacing * (bestRows - 1);
 
-        // Calculating card sizes
+        // Calculating card sizes  this will assign to cell width and height
         float cardWidth = (containerWidth - totalSpacingX) / bestCols;
         float cardHeight = (containerHeight - totalSpacingY) / bestRows;
 
@@ -101,7 +100,7 @@ public class CardLayOutController : MonoBehaviour
         gridLayout.padding = new RectOffset(rectOffset.left, rectOffset.right, rectOffset.top, rectOffset.bottom);
     }
 
-
+    //Getting Grid Transform
     public Transform GetGridTransform() => GridTransform;
 
     #endregion

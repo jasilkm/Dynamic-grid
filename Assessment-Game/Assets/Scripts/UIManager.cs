@@ -31,9 +31,7 @@ public class UIManager : MonoBehaviour
 
     public GameoverInfo GetGameoverInfo()
     {
-
         return hudController.GetGameoverInfo();
-
     }
 
     public void ShowPauseScreen()
@@ -64,6 +62,17 @@ public class UIManager : MonoBehaviour
     public void ShowLevelSelection()
     {
         levelSelectionController.Show();
+    }
+
+
+    public void HideHud()
+    {
+        hudController.HideHud();
+    }
+
+    public void ShowHud()
+    {
+        hudController.ShowHud();
     }
 
 

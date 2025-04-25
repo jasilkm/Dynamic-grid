@@ -7,6 +7,7 @@ public class LevelSelectionController : MonoBehaviour
     [SerializeField] private GameObject _levelPrefab;
     [SerializeField] private RectTransform _transform;
 
+    private int totalLevel = 10;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,12 +23,11 @@ public class LevelSelectionController : MonoBehaviour
 
     public void CreateLevels()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < totalLevel; i++)
         {
             GameObject level = Instantiate(_levelPrefab, _transform);
             LevelItem levelItem = level.GetComponent<LevelItem>();
             levelItem.UpdateLevelInfo(i+1);
-
         }
 
     }

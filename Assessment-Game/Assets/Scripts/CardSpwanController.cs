@@ -33,7 +33,11 @@ public class CardSpwanController : MonoBehaviour
 
 
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="totalCards">the total cards need to spawn on gridLayout</param>
+    /// <param name="getCardHandler">Registering callback event to the each card</param>
     public void SpwanCards(int totalCards, Action<CardView> getCardHandler)
     {
         _totalCards = totalCards;
@@ -41,7 +45,7 @@ public class CardSpwanController : MonoBehaviour
         _cardLayOutController.CreateLayout(totalCards);
 
         _getCardHandler = getCardHandler;
-
+        // genrating cards
         StartCoroutine(_genrateCards(totalCards)) ;
     }
 
@@ -58,7 +62,7 @@ public class CardSpwanController : MonoBehaviour
             cardView.gameObject.transform.localScale = Vector3.one;
             cardView.gameObject.SetActive(false);
             gameCards.Add(cardView);
-
+            // Registering call back
             cardView.SetCardData(shuffledCards[i], (card) =>
             {
                 _getCardHandler(card);
@@ -76,7 +80,12 @@ public class CardSpwanController : MonoBehaviour
         DisbaleGrid();
     }
 
-
+    /// <summary>
+    /// Method is using to spawan card if user trying play from persistance
+    /// </summary>
+    /// <param name="cards">Cards ids based on this id  rretring matching data from card list</param>
+    /// <param name="levelData"></param>
+    /// <param name="getCardHandler"></param>
     public void SpwanCards(List<int> cards, LevelData levelData, Action<CardView> getCardHandler)
     {
         ClearLevelAssets();
@@ -107,7 +116,7 @@ public class CardSpwanController : MonoBehaviour
                 .FirstOrDefault(card => card.cardID == cards[i]);
 
             gameCards.Add(cardView);
-
+            // Registering call back
             cardView.SetCardData(cardData, (card) =>
             {
                 _getCardHandler(card);
@@ -132,7 +141,9 @@ public class CardSpwanController : MonoBehaviour
 
     }
 
-
+    /// <summary>
+    /// Clearing all level assetes from Gridlayout
+    /// </summary>
     public void ClearLevelAssets()
     {
         if (gameCards == null || gameCards.Count == 0) return;
@@ -148,7 +159,10 @@ public class CardSpwanController : MonoBehaviour
     #endregion
 
     #region private Methods
-
+    /// <summary>
+    /// Retriving required uniq cards for the level and multiplying with 2 for pair and reshuflled to make random
+    /// </summary>
+    /// <returns>Final list of cards</returns>
     private List<CardData> GetShuffledCards()
     {
         // Creating Uniq list for data  in each launch of the Game;
@@ -175,23 +189,18 @@ public class CardSpwanController : MonoBehaviour
 
     }
 
+    // Disabling grid so we can animate the its childs
     public void DisbaleGrid()
     {
         _cardLayOutController.gridLayout.enabled = false;
     }
 
-
+    // Enable grid for spwan assets
     public void EnableGrid()
     {
         _cardLayOutController.gridLayout.enabled = true;
     }
 
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
 
 

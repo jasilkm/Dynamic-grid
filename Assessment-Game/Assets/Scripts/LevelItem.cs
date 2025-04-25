@@ -18,7 +18,7 @@ public class LevelItem : MonoBehaviour
     {
         _levelBtn.onClick.AddListener(() =>
         {
-            GameEvents.RaiseOnLevelSelected(totalCards);
+            GameEvents.RaiseOnLevelSelected(totalCards, levelID);
         });
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using DG.Tweening;
 public class HudController : MonoBehaviour
 {
 
@@ -24,7 +25,7 @@ public class HudController : MonoBehaviour
     {
         if (score == 0) _totalScore = 0;
 
-         _totalScore += score;
+        _totalScore += score;
         _scoreText.text = $"Score: {_totalScore}";
     }
 
@@ -32,7 +33,7 @@ public class HudController : MonoBehaviour
     public void UpdateBonus(int bonus)
     {
         if (bonus == 0) _totalScore = 0; _bonus = 0;
-         _totalScore += bonus;
+        _totalScore += bonus;
         _bonus += bonus;
         _scoreText.text = $"Score: {_totalScore}";
     }
@@ -47,6 +48,17 @@ public class HudController : MonoBehaviour
         return gameoverInfo;
     }
 
+
+    public void ShowHud()
+    {
+
+        this.gameObject.SetActive(true);
+    }
+
+    public void HideHud()
+    {
+        this.gameObject.SetActive(false);
+    }
 
 
 }

@@ -3,15 +3,18 @@ using System;
 public static class GameEvents
 {
     public static event Action OnQuitPressed;
-    public static event Action<int> OnLevelSelected;
+    public static event Action<int,int> OnLevelSelected;
 
+
+    // GameQuit Event fro Quit menu
     public static void RaiseQuitPressed()
     {
         OnQuitPressed?.Invoke();
     }
 
-    public static void RaiseOnLevelSelected(int totalCards)
+    // level Selection
+    public static void RaiseOnLevelSelected(int totalCards,int currentLevel)
     {
-        OnLevelSelected?.Invoke(totalCards);
+        OnLevelSelected?.Invoke(totalCards, currentLevel);
     }
 }
