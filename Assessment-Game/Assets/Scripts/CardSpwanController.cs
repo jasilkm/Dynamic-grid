@@ -41,12 +41,17 @@ public class CardSpwanController : MonoBehaviour
     public void SpwanCards(int totalCards, Action<CardView> getCardHandler)
     {
         _totalCards = totalCards;
-        
         _cardLayOutController.CreateLayout(totalCards);
 
         _getCardHandler = getCardHandler;
         // genrating cards
         StartCoroutine(_genrateCards(totalCards)) ;
+    }
+
+
+     void Awake()
+    {
+      
     }
 
 
@@ -89,12 +94,12 @@ public class CardSpwanController : MonoBehaviour
     public void SpwanCards(List<int> cards, LevelData levelData, Action<CardView> getCardHandler)
     {
         ClearLevelAssets();
+       
         _totalCards = cards.Count;
-
         _cardLayOutController.CreateLayout(_totalCards);
 
         _getCardHandler = getCardHandler;
-
+       
         StartCoroutine(_genrateCards(cards, levelData));
     }
 
@@ -200,6 +205,10 @@ public class CardSpwanController : MonoBehaviour
     {
         _cardLayOutController.gridLayout.enabled = true;
     }
+
+
+    public void HideGameLayout() => _gridTransform.gameObject.SetActive(false);
+    private void ShowGameLayout() => _gridTransform.gameObject.SetActive(true);
 
 }
 

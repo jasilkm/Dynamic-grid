@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
     {
         GameEvents.OnLevelSelected += StartGame;
         GameEvents.OnQuitPressed += GameEvents_OnQuitPressed;
+        GameEvents.OnLoadLevelFromPersistance += LoadLevel;
 
         if (Instance != null && Instance != this)
         {
@@ -78,9 +79,18 @@ public class GameManager : MonoBehaviour
 
 
     // Load level data from Json
-    public void LoadLevel()
+    private void LoadLevel()
     {
         LevelData levelData = SaveAndLoadGame.LoadLevelData();
+
+
+        if (levelData.totalCards == 0)
+        {
+
+            UIManager.Instance.ShowMessagePop("No saved progress found.");
+            return;
+        }
+        UIManager.Instance.ShowHud();
         // Retrive all cards 
         List<CardData> cardDatas = _spwanController.cardDatas;
 

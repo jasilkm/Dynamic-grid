@@ -35,7 +35,7 @@ public class GameOverController : MonoBehaviour
    
     public void NextLevel()
     {
-        int level = GameManager.Instance.CurrentLevel;
+        int level = GameManager.Instance.CurrentLevel+1;
         int totalCards = level * 2;
         GameEvents.RaiseOnLevelSelected(totalCards, level);
         this.gameObject.SetActive(false);

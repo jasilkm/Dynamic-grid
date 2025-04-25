@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameOverController gameOverController;
     [SerializeField] private PauseController pauseController;
     [SerializeField] private LevelSelectionController levelSelectionController;
+    [SerializeField] private MessagePop messagePop;
 
 
 
@@ -75,5 +76,10 @@ public class UIManager : MonoBehaviour
         hudController.ShowHud();
     }
 
+    public void ShowMessagePop(string message)
+    {
+        messagePop.ShowMessage(message);
+
+    }
 
 }

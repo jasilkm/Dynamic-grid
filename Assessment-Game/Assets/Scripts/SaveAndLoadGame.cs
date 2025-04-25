@@ -6,13 +6,27 @@ using System.IO;
 using System.Linq;
 public static class SaveAndLoadGame 
 {
-    private static string SavePath => Application.persistentDataPath + "/level.json";
+    private static string SavePath => Application.persistentDataPath + "/level1.json";
 
 
     public static void SaveLevelData(List<CardView> cardViews,GameoverInfo gameoverInfo)
     {
         int totalCards = 0;
         LevelData levelData = new LevelData();
+
+
+        // if it flipped card count  is 1 we need to  update it as 0
+        int flippedCount = cardViews.Count(item => item.isFlipped);
+
+        if (flippedCount == 1)
+        {
+            var itemToReset = cardViews.FirstOrDefault(item => item.isFlipped);
+            if (itemToReset != null)
+            {
+                itemToReset.isFlipped = false;
+            }
+        }
+
 
         foreach (var item in cardViews)
         {
@@ -39,6 +53,7 @@ public static class SaveAndLoadGame
     {
         if (!File.Exists(SavePath))
         {
+
             return new LevelData();
         }
 

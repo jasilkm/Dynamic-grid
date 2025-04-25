@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class LevelSelectionController : MonoBehaviour
 {
     [SerializeField] private GameObject _levelPrefab;
     [SerializeField] private RectTransform _transform;
+    [SerializeField] private Button _loadBtn;
 
     private int totalLevel = 10;
     // Start is called before the first frame update
@@ -14,12 +15,24 @@ public class LevelSelectionController : MonoBehaviour
         CreateLevels();
     }
 
+     void Awake()
+    {
+        _loadBtn.onClick.AddListener(LoadLevelFromPersistance);
+
+    }
+
     // Update is called once per frame
     void Update()
     {
         
     }
 
+
+    private void LoadLevelFromPersistance()
+    {
+        GameEvents.RaiseOnLoadLevelFromPersistance();
+        Hide();
+    }
 
     public void CreateLevels()
     {
