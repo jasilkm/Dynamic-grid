@@ -49,11 +49,6 @@ public class CardSpwanController : MonoBehaviour
     }
 
 
-     void Awake()
-    {
-      
-    }
-
 
     IEnumerator _genrateCards(int totalCards)
     {
@@ -76,10 +71,13 @@ public class CardSpwanController : MonoBehaviour
 
         foreach (var item in gameCards)
         {
-            yield return new WaitForSeconds(0.03f);
             AudioManager.Instance.PlaySFX(AudioManager.Instance.cardGenerate);
             item.gameObject.SetActive(true);
+            item.FlipCards();
         }
+ 
+        yield return new WaitForSeconds(3f);
+        gameCards.ForEach(x => x.BackFlipCard());
 
         yield return new WaitForSeconds(1);
         DisbaleGrid();
