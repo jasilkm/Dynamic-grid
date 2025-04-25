@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour
     private int _completedPair = 0;
     private int _totalCards = 16;
     private float lastMatchTime = -10f;
-    private const int BonusTime = 1;
+    private float previousMatchTime = -10f;
+    private const float BonusTime = 1.5f;
     private const int _score = 10;
     private const int _bonus = 10;
     public static GameManager Instance { get; private set; }
@@ -39,7 +40,7 @@ public class GameManager : MonoBehaviour
     {
       
       // StartGame();
-      // LoadLevel();
+       //LoadLevel();
     }
 
     IEnumerator _StartGame()
@@ -82,7 +83,6 @@ public class GameManager : MonoBehaviour
 
         if (card1.cardData.cardID == card2.cardData.cardID)
         {
-            
             float currentTime = Time.time;
 
             AudioManager.Instance.PlaySFX(AudioManager.Instance.cardMatchedSound);
@@ -91,11 +91,12 @@ public class GameManager : MonoBehaviour
 
             UIManager.Instance.SetScore(_score);
 
-            if (currentTime - lastMatchTime <= BonusTime)
+            if (previousMatchTime - lastMatchTime <= BonusTime)
             {
                 UIManager.Instance.SetBonusScore(_bonus);
+                Debug.Log("Received Bonus Point");
             }
-            
+            previousMatchTime = lastMatchTime;
             lastMatchTime = currentTime;
 
             _completedPair++;
@@ -150,8 +151,8 @@ public class GameManager : MonoBehaviour
         Vector3 posA = card1.transform.position;
         Vector3 posB = card2.transform.position;
         Vector3 midPoint = (posA + posB) / 2;
-        card1.gameObject.transform.DOMove(midPoint, .4f).SetEase(Ease.Linear).OnComplete(() => card1.gameObject.transform.DOScale(new Vector3(.01f, .01f, .01f),.1f)); ;  
-        card2.gameObject.transform.DOMove(midPoint, .4f).SetEase(Ease.Linear).OnComplete(() => card2.gameObject.transform.DOScale(new Vector3(.01f, .01f, .01f), .1f)); 
+        card1.gameObject.transform.DOMove(midPoint, .4f).SetEase(Ease.Linear).OnComplete(() => card1.gameObject.transform.DOScale(new Vector3(.01f, .01f, .001f),.1f)); ;  
+        card2.gameObject.transform.DOMove(midPoint, .4f).SetEase(Ease.Linear).OnComplete(() => card2.gameObject.transform.DOScale(new Vector3(.01f, .01f, .001f), .1f)); 
     }
 
 

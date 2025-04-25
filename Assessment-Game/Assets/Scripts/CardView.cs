@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using DG.Tweening;
 public class CardView : MonoBehaviour
 {
 
@@ -136,6 +137,12 @@ public class CardView : MonoBehaviour
         _frontImage.sprite = cardData.cardImage;
 
     }
+
+    public void SetScale()
+    {
+        this.gameObject.transform.DOScale(new Vector3(.001f, .001f, .001f),.1f);
+    }
+
 
 
     #endregion

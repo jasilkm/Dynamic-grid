@@ -48,8 +48,6 @@ public class CardSpwanController : MonoBehaviour
 
     IEnumerator _genrateCards(int totalCards)
     {
-       
-
         List<CardData> shuffledCards = GetShuffledCards();
 
         for (int i = 0; i < totalCards; i++)
@@ -77,38 +75,58 @@ public class CardSpwanController : MonoBehaviour
     }
 
 
-    public void SpwanCards(List<int> cards,LevelData levelData,  Action<CardView> getCardHandler)
+    public void SpwanCards(List<int> cards, LevelData levelData, Action<CardView> getCardHandler)
     {
         _totalCards = cards.Count;
 
         _cardLayOutController.CreateLayout(_totalCards);
 
+        _getCardHandler = getCardHandler;
 
+        StartCoroutine(_genrateCards(cards, levelData));
+    }
+
+
+    IEnumerator _genrateCards(List<int> cards,LevelData levelData)
+    {
+        _cardLayOutController.CreateLayout(_totalCards);
+        CardView cardView = new CardView();
         for (int i = 0; i < _totalCards; i++)
         {
             GameObject obj = Instantiate(_cardView.gameObject, _gridTransform);
+             cardView = obj.GetComponent<CardView>();
 
-            CardView cardView = obj.GetComponent<CardView>();
 
+            cardView.gameObject.SetActive(false);
 
             //getting matching Card data 
             var cardData = cardDatas
                 .FirstOrDefault(card => card.cardID == cards[i]);
 
-
-            if (levelData.levelDataInfos[i].isFlipped)
-            {
-                cardView.FlipCards();
-
-            }
-
             gameCards.Add(cardView);
 
             cardView.SetCardData(cardData, (card) =>
             {
-                getCardHandler(card);
+                _getCardHandler(card);
             });
         }
+
+
+        for (int i = 0; i < _totalCards; i++)
+        {
+            yield return new WaitForSeconds(0.03f);
+            AudioManager.Instance.PlaySFX(AudioManager.Instance.cardGenerate);
+            gameCards[i].gameObject.SetActive(true);
+            if (levelData.levelDataInfos[i].isFlipped)
+            {
+                gameCards[i].SetScale();
+            }
+          
+        }
+
+        yield return new WaitForSeconds(1);
+        DisbaleGrid();
+
     }
 
 
@@ -118,6 +136,7 @@ public class CardSpwanController : MonoBehaviour
         {
             Destroy(item.gameObject);
         }
+        EnableGrid();
         gameCards.Clear();
        
     }
@@ -132,8 +151,8 @@ public class CardSpwanController : MonoBehaviour
         // duplicating same data to spawn
         List<CardData> duplicated = tempCards.Concat(tempCards).ToList();
         //Making Random order 
-      //  List<CardData> shuffledCards = duplicated.OrderBy(x => UnityEngine.Random.value).ToList();
-        return duplicated;
+        List<CardData> shuffledCards = duplicated.OrderBy(x => UnityEngine.Random.value).ToList();
+        return shuffledCards;
     }
 
     #endregion
