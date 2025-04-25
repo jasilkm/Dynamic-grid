@@ -29,59 +29,77 @@ public class CardLayOutController : MonoBehaviour
         containerRect.anchoredPosition = new Vector2(0, -150);
     }
 
-    private void Start()
-    {
-        
-    }
-
     #endregion
 
 
     #region Public Methods
+    
+
+
     public void CreateLayout(int totalCells)
     {
+        if (totalCells <= 0) {
+
+            Debug.LogError($"[CardLayOutController] Invalid total cell count: {totalCells}. Must be greater than 0 to create a layout.");
+
+            return;
+        } 
 
         int bestCols = 1;
         int bestRows = totalCells;
 
-        float containerWidth = containerRect.rect.width - (rectOffset.left+rectOffset.right+ xOffset);
+        float containerWidth = containerRect.rect.width - (rectOffset.left + rectOffset.right + xOffset);
         float containerHeight = containerRect.rect.height - (rectOffset.top + rectOffset.bottom + yOffset);
+
+
+        float bestFitSize = float.MaxValue;
 
         for (int i = 1; i <= totalCells; i++)
         {
             if (totalCells % i == 0)
             {
                 int cols = i;
-
                 int rows = totalCells / i;
 
-                if (Mathf.Abs(cols - rows) < Mathf.Abs(bestCols - bestRows))
-                {
 
+                // setting grid based on  landscape or portrite
+                float aspect = (float)cols / rows;
+                float targetAspect = containerWidth / containerHeight;
+                float cardSize = Mathf.Abs(aspect - targetAspect);
+
+                //if (Mathf.Abs(cols - rows) < Mathf.Abs(bestCols - bestRows))
+                //{
+
+                //    bestCols = cols;
+                //    bestRows = rows;
+                //}
+
+
+
+                if (cardSize < bestFitSize)
+                {
+                    bestFitSize = cardSize;
                     bestCols = cols;
                     bestRows = rows;
                 }
             }
-
         }
-        // Calculating total spaces 
+
+        // Calculating total spacing
         float totalSpacingX = spacing * (bestCols - 1);
         float totalSpacingY = spacing * (bestRows - 1);
 
-        // Calculating Card Sizes 
+        // Calculating card sizes
         float cardWidth = (containerWidth - totalSpacingX) / bestCols;
-        float cardheight = (containerHeight - totalSpacingY) / bestRows;
+        float cardHeight = (containerHeight - totalSpacingY) / bestRows;
 
-        // Setting Grid Properties
+        // Setting grid properties
         gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         gridLayout.constraintCount = bestCols;
-        gridLayout.cellSize = new Vector2(cardWidth, cardheight);
+        gridLayout.cellSize = new Vector2(cardWidth, cardHeight);
         gridLayout.spacing = new Vector2(spacing, spacing);
         gridLayout.padding = new RectOffset(rectOffset.left, rectOffset.right, rectOffset.top, rectOffset.bottom);
     }
-
-
-
 
 
     public Transform GetGridTransform() => GridTransform;
