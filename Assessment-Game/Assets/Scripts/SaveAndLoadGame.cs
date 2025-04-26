@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 public static class SaveAndLoadGame 
 {
-    private static string SavePath => Application.persistentDataPath + "/level1.json";
+    private static string SavePath => Application.persistentDataPath + "/level01.json";
 
 
     public static void SaveLevelData(List<CardView> cardViews,GameoverInfo gameoverInfo)
@@ -33,6 +33,7 @@ public static class SaveAndLoadGame
             LevelDataInfo levelDataInfo = new LevelDataInfo();
             levelDataInfo.cardId = item.cardData.cardID;
             levelDataInfo.isFlipped = item.isFlipped;
+            levelDataInfo.isSelected = item.isMatched;
             levelData.levelDataInfos.Add(levelDataInfo);
             totalCards++;
         }
@@ -68,7 +69,9 @@ public static class SaveAndLoadGame
 public class LevelDataInfo
 {
     public bool isFlipped;
+    public bool isSelected;
     public int cardId;
+
     
 }
 

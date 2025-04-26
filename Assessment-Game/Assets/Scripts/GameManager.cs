@@ -141,7 +141,8 @@ public class GameManager : MonoBehaviour
             float currentTime = Time.time;
 
             AudioManager.Instance.PlaySFX(AudioManager.Instance.cardMatchedSound);
-
+            card1.isMatched = true;
+            card2.isMatched = true;
             PlayCardMoveAnimation(card1, card2);
 
             UIManager.Instance.SetScore(_score);

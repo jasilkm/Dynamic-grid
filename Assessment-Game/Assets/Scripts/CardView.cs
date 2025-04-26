@@ -18,6 +18,7 @@ public class CardView : MonoBehaviour
     #region public properties
     [HideInInspector]public CardData cardData;
     public bool isFlipped = false;
+    public bool isMatched = false;
 
     #endregion
 
@@ -48,7 +49,7 @@ public class CardView : MonoBehaviour
 
     public void BackFlipCard()
     {
-        
+
         StartCoroutine(FlipCardToNormal(true));
         
     }

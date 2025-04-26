@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using DG.Tweening;
 public class CardSpwanController : MonoBehaviour
 {
 
@@ -59,14 +60,15 @@ public class CardSpwanController : MonoBehaviour
 
         for (int i = 0; i < totalCards; i++)
         {
-            
+            yield return new WaitForEndOfFrame();
             GameObject obj = Instantiate(_cardView.gameObject, _gridTransform);
 
             CardView cardView = obj.GetComponent<CardView>();
 
             cardView.gameObject.GetComponent<RectTransform>().sizeDelta = _cardLayOutController.gridLayout.cellSize;
 
-            cardView.gameObject.transform.localScale = Vector3.one;
+            cardView.gameObject.transform.localScale = new Vector3(1, 1, 1);
+
             cardView.gameObject.SetActive(false);
             gameCards.Add(cardView);
             // Registering call back
@@ -101,9 +103,7 @@ public class CardSpwanController : MonoBehaviour
         ClearLevelAssets();
         _totalCards = cards.Count;
         _cardLayOutController.CreateLayout(_totalCards);
-
         _getCardHandler = getCardHandler;
-       
         StartCoroutine(_genrateCards(cards, levelData));
     }
 
@@ -112,47 +112,67 @@ public class CardSpwanController : MonoBehaviour
     {
         _cardLayOutController.CreateLayout(_totalCards);
         CardView cardView = new CardView();
+
         for (int i = 0; i < _totalCards; i++)
         {
+
+
+            yield return new WaitForEndOfFrame();
             GameObject obj = Instantiate(_cardView.gameObject, _gridTransform);
             cardView = obj.GetComponent<CardView>();
+            cardView.gameObject.transform.localScale = new Vector3(1, 1, 1);
 
             cardView.gameObject.GetComponent<RectTransform>().sizeDelta = _cardLayOutController.gridLayout.cellSize;
             cardView.gameObject.transform.localScale = Vector3.one;
-            cardView.gameObject.SetActive(false);
-
+            cardView.gameObject.SetActive(true);
             //getting matching Card data 
             var cardData = cardDatas
                 .FirstOrDefault(card => card.cardID == cards[i]);
 
-            gameCards.Add(cardView);
+          
             // Registering call back
             cardView.SetCardData(cardData, (card) =>
             {
                 _getCardHandler(card);
             });
-        }
 
+            gameCards.Add(cardView);
+        }
+        yield return new WaitForEndOfFrame();
+        DisbaleGrid();
 
         for (int i = 0; i < _totalCards; i++)
         {
             AudioManager.Instance.PlaySFX(AudioManager.Instance.cardGenerate);
-            gameCards[i].gameObject.SetActive(true);
-            if (levelData.levelDataInfos[i].isFlipped)
+
+            if (levelData.levelDataInfos[i].isSelected)
             {
-                gameCards[i].SetScale();
+                gameCards[i].isMatched = true;
+
+                PlayCardMoveAnimation(gameCards[i]);
+
+
+            }
+            else
+
+            {
+                gameCards[i].FlipCards();
+
             }
 
-            gameCards[i].FlipCards();
+          
 
 
         }
 
-        yield return new WaitForSeconds(3f);
-        gameCards.ForEach(x => x.BackFlipCard());
-        yield return new WaitForSeconds(1);
-        DisbaleGrid();
 
+        // delay set for intial view card to memorise
+
+        yield return new WaitForSeconds(3f);
+        gameCards.Where(x => !x.isMatched).ToList().ForEach(x => x.BackFlipCard());
+
+
+      
     }
 
     /// <summary>
@@ -215,8 +235,24 @@ public class CardSpwanController : MonoBehaviour
     }
 
 
+
+    // Card animation after successful selection
+    private void PlayCardMoveAnimation(CardView card1)
+    {
+        // setting card position top off all other cards;
+        card1.gameObject.transform.SetSiblingIndex(100);
+
+        Vector3 posA = card1.transform.position;
+        card1.gameObject.transform.DOMove(new Vector3(card1.gameObject.transform.position.x, -(Screen.height + 200), 0f), .6f);
+    }
+
+
     public void HideGameLayout() => _gridTransform.gameObject.SetActive(false);
     private void ShowGameLayout() => _gridTransform.gameObject.SetActive(true);
+
+
+
+
 
 }
 
