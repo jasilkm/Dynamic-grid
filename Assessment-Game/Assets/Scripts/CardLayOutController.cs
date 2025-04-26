@@ -66,21 +66,12 @@ public class CardLayOutController : MonoBehaviour
                 float targetAspect = containerWidth / containerHeight;
                 float cardSize = Mathf.Abs(aspect - targetAspect);
 
-                //if (Mathf.Abs(cols - rows) < Mathf.Abs(bestCols - bestRows))
-                //{
-
-                //    bestCols = cols;
-                //    bestRows = rows;
-                //}
-
-
-
-                if (cardSize < bestFitSize)
+                if (Mathf.Abs(cols - rows) < Mathf.Abs(bestCols - bestRows))
                 {
-                    bestFitSize = cardSize;
                     bestCols = cols;
                     bestRows = rows;
                 }
+
             }
         }
 
