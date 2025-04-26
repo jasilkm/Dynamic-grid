@@ -41,6 +41,7 @@ public class CardSpwanController : MonoBehaviour
     public void SpwanCards(int totalCards, Action<CardView> getCardHandler)
     {
         _totalCards = totalCards;
+        ClearLevelAssets();
         _cardLayOutController.CreateLayout(totalCards);
 
         _getCardHandler = getCardHandler;
