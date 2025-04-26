@@ -36,6 +36,7 @@ public class CardLayOutController : MonoBehaviour
     
     public void CreateLayout(int totalCells)
     {
+          gridLayout.enabled = true;
         if (totalCells <= 0) {
 
             Debug.LogError($"[CardLayOutController] Invalid total cell count: {totalCells}. Must be greater than 0 to create a layout.");
@@ -49,8 +50,6 @@ public class CardLayOutController : MonoBehaviour
         float containerWidth = containerRect.rect.width - (rectOffset.left + rectOffset.right + xOffset);
         float containerHeight = containerRect.rect.height - (rectOffset.top + rectOffset.bottom + yOffset);
 
-        //using as starting value ] 
-        float bestFitSize = float.MaxValue;
         
         for (int i = 1; i <= totalCells; i++)
         {
@@ -59,12 +58,9 @@ public class CardLayOutController : MonoBehaviour
             {
                 int cols = i;
                 int rows = totalCells / i;
-
-
                 // setting grid based on  landscape or portrite
                 float aspect = (float)cols / rows;
                 float targetAspect = containerWidth / containerHeight;
-                float cardSize = Mathf.Abs(aspect - targetAspect);
 
                 if (Mathf.Abs(cols - rows) < Mathf.Abs(bestCols - bestRows))
                 {

@@ -52,13 +52,19 @@ public class CardSpwanController : MonoBehaviour
 
     IEnumerator _genrateCards(int totalCards)
     {
-        ClearLevelAssets();
+
+       
         List<CardData> shuffledCards = GetShuffledCards();
 
         for (int i = 0; i < totalCards; i++)
         {
+            
             GameObject obj = Instantiate(_cardView.gameObject, _gridTransform);
+
             CardView cardView = obj.GetComponent<CardView>();
+
+            cardView.gameObject.GetComponent<RectTransform>().sizeDelta = _cardLayOutController.gridLayout.cellSize;
+
             cardView.gameObject.transform.localScale = Vector3.one;
             cardView.gameObject.SetActive(false);
             gameCards.Add(cardView);
@@ -92,7 +98,6 @@ public class CardSpwanController : MonoBehaviour
     public void SpwanCards(List<int> cards, LevelData levelData, Action<CardView> getCardHandler)
     {
         ClearLevelAssets();
-       
         _totalCards = cards.Count;
         _cardLayOutController.CreateLayout(_totalCards);
 
@@ -109,8 +114,9 @@ public class CardSpwanController : MonoBehaviour
         for (int i = 0; i < _totalCards; i++)
         {
             GameObject obj = Instantiate(_cardView.gameObject, _gridTransform);
-             cardView = obj.GetComponent<CardView>();
+            cardView = obj.GetComponent<CardView>();
 
+            cardView.gameObject.GetComponent<RectTransform>().sizeDelta = _cardLayOutController.gridLayout.cellSize;
             cardView.gameObject.transform.localScale = Vector3.one;
             cardView.gameObject.SetActive(false);
 
@@ -159,7 +165,6 @@ public class CardSpwanController : MonoBehaviour
         {
             Destroy(item.gameObject);
         }
-        EnableGrid();
         gameCards.Clear();
        
     }
