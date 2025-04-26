@@ -1,16 +1,20 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
 using DG.Tweening;
-public class CardSpwanController : MonoBehaviour
+
+[RequireComponent(typeof(SpriteRenderer))]
+public class GridSpwanController : MonoBehaviour
 {
 
     #region public properties
     [HideInInspector]
-    public List<CardView> gameCards = new List<CardView>();
+    public List<CardViewItem> gameCards = new List<CardViewItem>();
     public List<CardData> cardDatas = new List<CardData>();
+       
 
     #endregion
 
@@ -18,13 +22,16 @@ public class CardSpwanController : MonoBehaviour
 
 
 
-    [SerializeField] private CardView _cardView;
-  
-    private CardLayOutController _cardLayOutController;
+    [SerializeField] private CardViewItem _cardView;
+
+    private GridLayoutController _cardLayOutController;
     private Transform _gridTransform;
     private CardData _cardData;
     private int _totalCards;
-    private Action<CardView> _getCardHandler;
+    private Action<CardViewItem> _getCardHandler;
+    private GameObject[,] gridArray;
+    private float spacing = .06f;
+    private int i = 0;
     #endregion
 
     #region Events properties
@@ -35,18 +42,9 @@ public class CardSpwanController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _cardLayOutController = FindAnyObjectByType<CardLayOutController>();
-
-        if (_cardLayOutController != null)
-        {
-            _gridTransform = _cardLayOutController.GetGridTransform();
-        }
-        else
-        {
-            Debug.LogError($"[CardSpwanController] Add CardLayOutController to the stage");
-
-
-        }
+        _cardLayOutController = FindAnyObjectByType<GridLayoutController>();
+        GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Sliced;
+       // GetComponent<SpriteRenderer>().size = new Vector2(4, 6);
 
     }
 
@@ -55,52 +53,77 @@ public class CardSpwanController : MonoBehaviour
 
 
 
-
-
-
     /// <summary>
     /// 
     /// </summary>
     /// <param name="totalCards">the total cards need to spawn on gridLayout</param>
     /// <param name="getCardHandler">Registering callback event to the each card</param>
-    public void SpwanCards(int totalCards, Action<CardView> getCardHandler)
+    public void SpwanCards(int totalCards, Action<CardViewItem> getCardHandler)
     {
+        i = 0;
         _totalCards = totalCards;
         ClearLevelAssets();
-        _cardLayOutController.CreateLayout(totalCards);
+      GridInfo gridInfo =  _cardLayOutController.CreateGridLayOut(totalCards);
 
         _getCardHandler = getCardHandler;
         // genrating cards
-        StartCoroutine(_genrateCards(totalCards)) ;
+        StartCoroutine(_genrateCards(totalCards, gridInfo));
     }
 
+    
 
-
-    IEnumerator _genrateCards(int totalCards)
+    IEnumerator _genrateCards(int totalCards, GridInfo gridInfo)
     {
 
-       
+
         List<CardData> shuffledCards = GetShuffledCards();
 
-        for (int i = 0; i < totalCards; i++)
+        int columns = gridInfo.Columns;
+        int rows = gridInfo.Rows;
+        Vector2 cardSize = gridInfo.CardSize;
+
+        gridArray = new GameObject[gridInfo.Columns, gridInfo.Rows];
+
+        float startX = -gridInfo.WidgetSize.x / 2 + gridInfo.CardSize.x / 2;
+        float startY = -gridInfo.WidgetSize.y / 2 + gridInfo.CardSize.y / 2;
+
+
+        for (int x = 0; x < columns; x++)
         {
-            yield return new WaitForEndOfFrame();
-            GameObject obj = Instantiate(_cardView.gameObject, _gridTransform);
-
-            CardView cardView = obj.GetComponent<CardView>();
-
-            cardView.gameObject.GetComponent<RectTransform>().sizeDelta = _cardLayOutController.gridLayout.cellSize;
-
-            cardView.gameObject.transform.localScale = new Vector3(1, 1, 1);
-
-            cardView.gameObject.SetActive(false);
-            gameCards.Add(cardView);
-            // Registering call back
-            cardView.SetCardData(shuffledCards[i], (card) =>
+            for (int y = 0; y < rows; y++)
             {
-                _getCardHandler(card);
-            });
+                Vector3 position = new Vector3(
+                startX + x * (cardSize.x + spacing),
+                startY + y * (cardSize.y + spacing),
+                0
+            );
+
+                GameObject card = Instantiate(_cardView.gameObject, position, Quaternion.identity, _cardLayOutController.transform);
+
+                CardViewItem cardView = card.GetComponent<CardViewItem>();
+
+                gameCards.Add(cardView);
+
+                card.GetComponent<SpriteRenderer>().size = cardSize;
+
+                card.name = $"Card1_{x}_{y}";
+
+                // Registering call back
+
+                cardView.SetCardData(shuffledCards[i], (card) =>
+                {
+                    _getCardHandler(card);
+                });
+
+                gridArray[x, y] = card;
+
+
+                i++;
+
+            }
         }
+
+       
 
         foreach (var item in gameCards)
         {
@@ -108,12 +131,11 @@ public class CardSpwanController : MonoBehaviour
             item.gameObject.SetActive(true);
             item.FlipCards();
         }
- 
+
         yield return new WaitForSeconds(3f);
         gameCards.ForEach(x => x.BackFlipCard());
 
         yield return new WaitForSeconds(1);
-        DisbaleGrid();
     }
 
     /// <summary>
@@ -122,20 +144,19 @@ public class CardSpwanController : MonoBehaviour
     /// <param name="cards">Cards ids based on this id  rretring matching data from card list</param>
     /// <param name="levelData"></param>
     /// <param name="getCardHandler"></param>
-    public void SpwanCards(List<int> cards, LevelData levelData, Action<CardView> getCardHandler)
+    public void SpwanCards(List<int> cards, LevelData levelData, Action<CardViewItem> getCardHandler)
     {
         ClearLevelAssets();
         _totalCards = cards.Count;
-        _cardLayOutController.CreateLayout(_totalCards);
+        _cardLayOutController.CreateGridLayOut(_totalCards);
         _getCardHandler = getCardHandler;
         StartCoroutine(_genrateCards(cards, levelData));
     }
 
 
-    IEnumerator _genrateCards(List<int> cards,LevelData levelData)
+    IEnumerator _genrateCards(List<int> cards, LevelData levelData)
     {
-        _cardLayOutController.CreateLayout(_totalCards);
-        CardView cardView = new CardView();
+        CardViewItem cardView = new CardViewItem();
 
         for (int i = 0; i < _totalCards; i++)
         {
@@ -143,17 +164,17 @@ public class CardSpwanController : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
             GameObject obj = Instantiate(_cardView.gameObject, _gridTransform);
-            cardView = obj.GetComponent<CardView>();
+            cardView = obj.GetComponent<CardViewItem>();
             cardView.gameObject.transform.localScale = new Vector3(1, 1, 1);
 
-            cardView.gameObject.GetComponent<RectTransform>().sizeDelta = _cardLayOutController.gridLayout.cellSize;
+          //  cardView.gameObject.GetComponent<RectTransform>().sizeDelta = _cardLayOutController.gridLayout.cellSize;
             cardView.gameObject.transform.localScale = Vector3.one;
             cardView.gameObject.SetActive(true);
             //getting matching Card data 
             var cardData = cardDatas
                 .FirstOrDefault(card => card.cardID == cards[i]);
 
-          
+
             // Registering call back
             cardView.SetCardData(cardData, (card) =>
             {
@@ -163,7 +184,6 @@ public class CardSpwanController : MonoBehaviour
             gameCards.Add(cardView);
         }
         yield return new WaitForEndOfFrame();
-        DisbaleGrid();
 
         for (int i = 0; i < _totalCards; i++)
         {
@@ -184,7 +204,7 @@ public class CardSpwanController : MonoBehaviour
 
             }
 
-          
+
 
 
         }
@@ -196,7 +216,7 @@ public class CardSpwanController : MonoBehaviour
         gameCards.Where(x => !x.isMatched).ToList().ForEach(x => x.BackFlipCard());
 
 
-      
+
     }
 
     /// <summary>
@@ -211,7 +231,7 @@ public class CardSpwanController : MonoBehaviour
             Destroy(item.gameObject);
         }
         gameCards.Clear();
-       
+
     }
     #endregion
 
@@ -234,24 +254,12 @@ public class CardSpwanController : MonoBehaviour
     #endregion
 
 
- 
-
-    // Disabling grid so we can animate the its childs
-    public void DisbaleGrid()
-    {
-        _cardLayOutController.gridLayout.enabled = false;
-    }
-
-    // Enable grid for spwan assets
-    public void EnableGrid()
-    {
-        _cardLayOutController.gridLayout.enabled = true;
-    }
+  
 
 
 
     // Card animation after successful selection
-    private void PlayCardMoveAnimation(CardView card1)
+    private void PlayCardMoveAnimation(CardViewItem card1)
     {
         // setting card position top off all other cards;
         card1.gameObject.transform.SetSiblingIndex(100);

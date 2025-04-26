@@ -1,17 +1,18 @@
-using System.Collections;
+
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class GameManager : MonoBehaviour
+public class CardGameManager : MonoBehaviour
 {
     #region Private properties
 
-    private CardSpwanController _spwanController;
+    private GridSpwanController _spwanController;
     private GridSpwanController _gridSpwanController;
-    private List<CardView> _currentSelections = new List<CardView>();
+    private List<CardViewItem> _currentSelections = new List<CardViewItem>();
     private int _completedPair = 0;
     private int _totalCards = 0;
     private float lastMatchTime = -10f;
@@ -22,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     #region Public properties
     public int CurrentLevel { get; private set; }
-    public static GameManager Instance { get; private set; }
+    public static CardGameManager Instance { get; private set; }
     #endregion
 
 
@@ -40,22 +41,22 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-        _spwanController = FindAnyObjectByType<CardSpwanController>();
+        _spwanController = FindAnyObjectByType<GridSpwanController>();
 
     }
 
     void Start()
     {
-      
-      // StartGame();
-       //LoadLevel();
+
+      //  StartGame(10,5);
+        //LoadLevel();
     }
     #endregion
 
     #region Public Methods
 
     public GameoverInfo GetGameoverInfo() => UIManager.Instance.GetGameoverInfo();
-   
+
 
     IEnumerator _StartGame()
     {
@@ -118,24 +119,24 @@ public class GameManager : MonoBehaviour
     #region Private Methods
 
     // Matching card
-    private void MatchSelectedCards(CardView card)
+    private void MatchSelectedCards(CardViewItem card)
     {
         _currentSelections.Add(card);
 
         if (_currentSelections.Count == 2)
         {
-            CardView first = _currentSelections[0];
-            CardView second = _currentSelections[1];
+            CardViewItem first = _currentSelections[0];
+            CardViewItem second = _currentSelections[1];
             StartCoroutine(CheckMatchAsync(first, second));
-            _currentSelections.Clear(); 
+            _currentSelections.Clear();
         }
     }
 
     // checking Cards
-    IEnumerator CheckMatchAsync(CardView card1, CardView card2)
+    IEnumerator CheckMatchAsync(CardViewItem card1, CardViewItem card2)
     {
         yield return new WaitForSeconds(0.6f);
-       
+
         if (card1.cardData.cardID == card2.cardData.cardID)
         {
             float currentTime = Time.time;
@@ -180,7 +181,7 @@ public class GameManager : MonoBehaviour
     private void SaveLevelDataToLocal()
     {
         GameoverInfo gameoverInfo = UIManager.Instance.GetGameoverInfo();
-        SaveAndLoadGame.SaveLevelData(_spwanController.gameCards, gameoverInfo);
+    //    SaveAndLoadGame.SaveLevelData(_spwanController.gameCards, gameoverInfo);
     }
 
     private void SetCurrentLevel(int cLevel)
@@ -189,10 +190,10 @@ public class GameManager : MonoBehaviour
     }
 
 
-    
+
 
     // Card animation after successful selection
-    private void PlayCardMoveAnimation(CardView card1, CardView card2)
+    private void PlayCardMoveAnimation(CardViewItem card1, CardViewItem card2)
     {
         // setting card position top off all other cards;
         card1.gameObject.transform.SetSiblingIndex(100);
@@ -201,8 +202,8 @@ public class GameManager : MonoBehaviour
         Vector3 posA = card1.transform.position;
         Vector3 posB = card2.transform.position;
         Vector3 midPoint = (posA + posB) / 2;
-        card1.gameObject.transform.DOMove(midPoint, .4f).SetEase(Ease.Linear).OnComplete(() => card1.gameObject.transform.DOMove(new Vector3(card1.gameObject.transform.position.x, -(Screen.height+200), 0f),.6f)); 
-        card2.gameObject.transform.DOMove(midPoint, .4f).SetEase(Ease.Linear).OnComplete(() => card2.gameObject.transform.DOMove(new Vector3(card2.gameObject.transform.position.x, -(Screen.height+200), 0f), .6f)); 
+        card1.gameObject.transform.DOMove(midPoint, .4f).SetEase(Ease.Linear).OnComplete(() => card1.gameObject.transform.DOMove(new Vector3(card1.gameObject.transform.position.x, -(Screen.height + 200), 0f), .6f));
+        card2.gameObject.transform.DOMove(midPoint, .4f).SetEase(Ease.Linear).OnComplete(() => card2.gameObject.transform.DOMove(new Vector3(card2.gameObject.transform.position.x, -(Screen.height + 200), 0f), .6f));
     }
 
     // Quit Event

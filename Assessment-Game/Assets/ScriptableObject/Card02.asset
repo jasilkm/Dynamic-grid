@@ -15,3 +15,4 @@ MonoBehaviour:
   cardName: Card02
   cardImage: {fileID: 21300000, guid: 4aba29da100804ee38857306d41de815, type: 3}
   cardID: 1002
+  cardImagetx: {fileID: 2800000, guid: 4aba29da100804ee38857306d41de815, type: 3}

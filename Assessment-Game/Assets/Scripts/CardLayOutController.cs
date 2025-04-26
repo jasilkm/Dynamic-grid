@@ -36,7 +36,9 @@ public class CardLayOutController : MonoBehaviour
     
     public void CreateLayout(int totalCells)
     {
-          gridLayout.enabled = true;
+      
+
+        gridLayout.enabled = true;
         if (totalCells <= 0) {
 
             Debug.LogError($"[CardLayOutController] Invalid total cell count: {totalCells}. Must be greater than 0 to create a layout.");
