@@ -216,5 +216,13 @@ public class GameManager : MonoBehaviour
         _currentSelections.Clear();
 
     }
+
+    private void OnDestroy()
+    {
+        GameEvents.OnLevelSelected -= StartGame;
+        GameEvents.OnQuitPressed -= GameEvents_OnQuitPressed;
+        GameEvents.OnLoadLevelFromPersistance -= LoadLevel;
+    }
+
     #endregion
 }

@@ -56,6 +56,11 @@ public class LevelSelectionController : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
+    private void OnDestroy()
+    {
+        _loadBtn.onClick.RemoveListener(LoadLevelFromPersistance);
+    }
+
 
 }
 

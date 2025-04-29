@@ -155,6 +155,12 @@ public class CardView : MonoBehaviour
     }
 
 
+    private void OnDestroy()
+    {
+        _selectedCardHandler = null;
+        _selectBtn.onClick.RemoveListener(OnCardSelected);
+    }
+
     #endregion
 
 

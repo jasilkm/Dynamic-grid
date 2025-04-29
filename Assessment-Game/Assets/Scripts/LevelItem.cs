@@ -16,10 +16,15 @@ public class LevelItem : MonoBehaviour
 
     private void Awake()
     {
-        _levelBtn.onClick.AddListener(() =>
-        {
-            GameEvents.RaiseOnLevelSelected(totalCards, levelID);
-        });
+        _levelBtn.onClick.AddListener(OnLevelBtnClicked);
+
+    }
+
+
+
+    private void OnLevelBtnClicked()
+    {
+        GameEvents.RaiseOnLevelSelected(totalCards, levelID);
     }
 
 
@@ -28,6 +33,11 @@ public class LevelItem : MonoBehaviour
         _levelTxt.text = id.ToString();
         levelID = id;
         totalCards = id * 2;
+    }
+
+    private void OnDestroy()
+    {
+        _levelBtn.onClick.RemoveListener(OnLevelBtnClicked);
     }
 
 }
